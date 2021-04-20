@@ -1,0 +1,11 @@
+
+*.pyc
+news/migrations/0001_initial.py
+news/migrations/0002_remove_newsmodel_image.py
+news/migrations/__init__.py
+venv
+/__pycache__
+.env
+/migrations
+migrations
+/news/migrations

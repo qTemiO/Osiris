@@ -2,7 +2,7 @@ from django.db import models
 
 class NewsModel(models.Model):
     url = models.URLField()
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=300)
     newsText = models.TextField()
 
     def __repr__(self):

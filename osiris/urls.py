@@ -18,8 +18,14 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+from news.views import HomeView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
+    path('', HomeView),
+
     path('news/', include('news.urls')),
+    path('work/', include('workquote.urls')),
 ] 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

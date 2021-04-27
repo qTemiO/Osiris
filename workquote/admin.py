@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import (
+    Workquote,
+    WorkJournal
+)
+
+admin.site.register(Workquote)
+admin.site.register(WorkJournal)

@@ -1,31 +1,63 @@
 from bs4 import BeautifulSoup as BS
 import requests as req
 
-from osiris.settings import PARSLIMIT
-
+#from osiris.settings import PARSLIMIT
+PARSLIMIT = 20
 from loguru import logger
 
-def news_text(url):
+def get_tabpdf(url):
+    logger.warning(url)
     resp = req.get(url)
     soup = BS(resp.text, 'html.parser')
-    text_div = soup.find('div', class_="c-entry-content")
-    if text_div:
-        p_div = text_div.find_all('p')
-        new_text = ''
-        for p in p_div:
-            new_text += ((p.text) + ('\n\n'))
-        return new_text
+    domain = (url.split('https://')[1].strip('/'))
+
+    if 'fingertabs.com' in domain:
+        pdf_div = soup.find('iframe', class_='pdfjs-viewer')
+        if pdf_div:
+            return pdf_div['src']
+    
+def news_text(url):
+    logger.warning(url)
+    resp = req.get(url)
+    soup = BS(resp.text, 'html.parser')
+    domain = (url.split('https://')[1].strip('/'))
+
+    new_text = ''
+
+    if 'www.theverge.com' in domain:
+        text_div = soup.find('div', class_="c-entry-content")
+        if text_div:
+            p_div = text_div.find_all('p')
+            for p in p_div:
+                new_text += ((p.text) + ('\n\n'))
+    
+    if 'ria.ru' in domain:
+        text_div = soup.find_all('div', class_="article__text")
+        for div in text_div:
+            new_text += ((div.text) + ('\n\n'))
+            
+    return new_text
 
 def parse_news(url):
     resp = req.get(url)
     soup = BS(resp.text, 'html.parser')
-    domain = (url.split('https://www.')[1].strip('/'))
+    domain = (url.split('https://')[1].strip('/'))
+
+    logger.debug(domain)
 
     total = []
-    if domain == 'theverge.com':
+
+    if domain == 'www.theverge.com':
         divs = soup.find_all('div', class_="c-entry-box--compact__body")
         
-        for div in divs[:PARSLIMIT]:
+        limit = 0
+        if len(divs) < PARSLIMIT:
+            limit = len(divs)
+        else:
+            limit = PARSLIMIT
+        logger.success('Parselimit: ' + str(limit))
+        
+        for div in divs[:limit]:
             if div:
                 header = div.find('h2')
                 a_block = header.find('a')
@@ -45,15 +77,61 @@ def parse_news(url):
                     "text": post_text
                 })
 
+    elif domain == 'ria.ru':
+        divs = soup.find_all('a', class_="cell-list__item-link color-font-hover-only")
+        
+        limit = 0
+        if len(divs) < PARSLIMIT:
+            limit = len(divs)
+        else:
+            limit = PARSLIMIT
+            
+        logger.success('Parselimit: ' + str(limit))
+
+        for div in divs[:limit]:
+            if div:
+                post_title = div['title']
+                post_link = div['href']
+                post_text = news_text(post_link)
+                
+                total.append({
+                    "link": post_link,
+                    "title": post_title,
+                    "text": post_text
+                })
+
+    elif domain == 'fingertabs.com':
+        divs = soup.find_all('div', class_="post-content")
+
+        limit = 0
+        if len(divs) < PARSLIMIT:
+            limit = len(divs)
+        else:
+            limit = PARSLIMIT
+        
+        logger.success('Parselimit: ' + str(limit))
+
+        for div in divs[:limit]:
+            if div:
+                tab_link = div.h2.a['href']
+                tab_name = div.h2.text.replace('fingerstyle tabs ', '')
+                tab_pdf = get_tabpdf(tab_link)
+
+                logger.success(tab_name)
+                logger.info(tab_link)
+                logger.info(tab_pdf)
+    
     return total
 
-"""
 
+"""
+parse_news('https://ria.ru/')
 news = parse_news("https://www.theverge.com/")
 count = 0
 for new in news:
     logger.warning(new['title'])
     count += 1
 logger.error(count)
-
+print(news_text("https://ria.ru/20210420/egipet-1729144307.html?in=t"))
 """
+#parse_news("https://fingertabs.com/")

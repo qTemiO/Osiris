@@ -19,7 +19,6 @@ class NewsListView(generics.ListAPIView):
     queryset = NewsModel.objects.all()
     serializer_class = NewsSerializer
 
-
 class NewsCollect(APIView):
 
     permission_classes = ()
@@ -42,13 +41,13 @@ class NewsCollect(APIView):
                     model.save()
 
             logger.debug(models)
-            return render(request, 'news/news.html', context=({"datas": NewsSerializer(models, many=True).data}))
+            return render(request, 'news/collected.html', context=({"datas": NewsSerializer(models, many=True).data}))
         else:
             logger.error(url)
             return Response(status=500)
         
 
 def NewsHomeView(request):
-    data = NewsModel.objects.all()[:5]
+    data = NewsModel.objects.all()[:]
     serializer = NewsSerializer(data, many=True)
     return render(request, 'news/news.html', context={"datas":serializer.data})

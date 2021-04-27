@@ -14,9 +14,10 @@
     <p>Список новостей: <a href="http://127.0.0.1:8000/news/list/">Api</a> <a href="http://127.0.0.1:8000/news/">Site</a></p>
     <p>"Че новенького?":</p>
     <form action="/news/collect/" method="post">
-        <label for="url">Какой источник?</label>
-        <input id="url" type="text" name="url" value="https://www.wikipedia.org/">
-        <input type="submit" value="Ищи">
+        <p><input id="url1" type="radio" name="url" value="https://www.theverge.com/">The verge</p>
+        <p><input id="url2" type="radio" name="url" value="https://ria.ru/">Ria</p>
+        <p><input id="url3" type="radio" name="url" value="https://www.wikipedia.org/">Wikipedia</p>
+        <p><input type="submit" value="Ищи"></p>
     </form>
 </body>
 </html>

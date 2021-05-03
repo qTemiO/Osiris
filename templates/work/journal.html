@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue</title>
+</head>
+<body>  
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios@0.20.0/dist/axios.min.js"></script>
+
+    <!--Hello world-->
+    <div id="app">
+        [[ HelloThere ]]
+        <p></p>
+    </div>
+
+    <!--Names-->
+    <div class="container flex-d justify-content-center col-3" id="dataNames">
+        <ol>
+            <li v-for="name in Response">
+              [[ name ]]
+            </li>
+        </ol>
+        <p></p>
+        <button :class="['btn', isResonse ? 'btn-success' : 'btn-primary']"
+            @click="sendNames">Вывести предателей Родины</button>
+        <p></p>
+    </div>
+    
+    <!--All items-->
+    <div class="container flex-d justify-content-center col-3" id="dataAll">
+        <button v-if="isResonse" v-on:click="namesFilter">Фильтровать доносы</button>
+        <input class="form-control" v-if="isResonse" v-model="textFilter" placeholder="Что вы хотите найти?">
+        <select v-if="isResonse" v-model="filterCategory">
+            <option disabled value="">Выберите один из вариантов</option>
+            <option>Имя</option>
+            <option>Категория</option>
+            <option>Текст</option>
+        </select>
+        <ul v-for="data in Response">
+                <li> [[ data.Text ]] </li>
+                <li> [[ data.Category ]] </li>
+        </ul>
+        <button :class="['btn', isResonse ? 'btn-success' : 'btn-primary']"
+        v-on:click="sendAll">Показать доносы</button>
+    </div>
+</body>
+
+<script>
+    Vue.options.delimiters = ['[[', ']]'];
+
+    var dataNames = new Vue({
+        el:'#dataNames',
+        data: {
+            isResonse: false,
+            Response: null,
+            isDataResponse: false,
+            dataResponse: null,
+        },
+
+        methods: {
+            sendNames() {
+                axios({
+                    method: 'post',
+                    url: './sendNames/',
+                    data: {}
+                }).then((response) => {
+                    this.isResonse = true,
+                    this.Response = response.data.name
+                })
+            },
+        }
+    })
+
+    var dataAll = new Vue({
+        el:'#dataAll',
+        data: {
+            isResonse: false,
+            Response: null,
+            textFilter: "Ivan",
+            filterCategory: '',
+        },
+        methods: {
+            sendAll() {
+                axios({
+                    method: 'post',
+                    url: './sendAll/',
+                    data: {}
+                }).then((response) => {
+                    this.isResonse = true,
+                    this.Response = response.data.Data
+                })
+            },
+            namesFilter() {
+                axios({
+                    method: 'post',
+                    url: './namesFilter/',
+                    data: {
+                        "textFilter": this.textFilter,
+                        "filterCategory": this.filterCategory
+                    }
+                }).then((response) => {
+                    this.Response = response.data.Data
+                })
+            }
+        }
+    })
+
+
+    var app = new Vue({
+        el:'#app',
+        data: {
+            HelloThere: 'Товарищ политрук, новая партия доносов прибыла!'
+        }
+    })
+
+    var pricols = new Vue({
+    el: '#pricols',
+    data: {
+        time: new Date().toLocaleString() + ", товарищ Политрук!"
+    }
+    })
+
+
+</script>
+</html>

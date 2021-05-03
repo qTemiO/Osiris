@@ -11,3 +11,13 @@ class NewsModel(models.Model):
     def __str__(self):
         return self.title
     
+class TabsModel(models.Model):
+    url = models.URLField()
+    pdf = models.URLField()
+    name = models.CharField(max_length=300)
+    
+    def __repr__(self):
+        return self.name
+    
+    def __str__(self):
+        return self.name

@@ -117,9 +117,11 @@ def parse_news(url):
                 tab_name = div.h2.text.replace('fingerstyle tabs ', '')
                 tab_pdf = get_tabpdf(tab_link)
 
-                logger.success(tab_name)
-                logger.info(tab_link)
-                logger.info(tab_pdf)
+                total.append({
+                    "name": tab_name,
+                    "link": tab_link,
+                    "pdf": tab_pdf
+                })
     
     return total
 

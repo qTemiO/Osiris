@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osiris tabs gathered</title>
+</head>
+<body>
+    {% for data in datas %} 
+        <ul>
+            <li><h3>{{ data.name }}<h3></li>
+            <li><i><a href = {{ data.url }}> Страница таба </a></i></li>
+            <li><strong><a href = {{ data.pdf }}> Tab PDF</a></strong></li>
+        </ul>
+            <p></p>
+    {% endfor %} 
+</body>
+</html>

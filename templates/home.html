@@ -6,18 +6,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="/media/favicon.ico">
     <title>Osiris</title>
+    <style type="text/css">
+        .news-block { 
+         width: 250px; 
+         background: rgb(194, 194, 194);
+         padding: 10px;
+         padding-left: 20px; 
+         border: solid 1px black; 
+         float: right;
+         margin-right: 100px;
+        }
+        .tabs-block { 
+         width: 250px; 
+         padding: 10px;
+         padding-right: 20px; 
+         border: solid 1px black; 
+         float: left;
+         margin-left: 100px;
+        }
+       </style> 
 </head>
 <body>
     <img src="https://i.pinimg.com/736x/f8/0e/fd/f80efd0f2e6a753a3bea4c44ce3c5aa2.jpg" width="200" height="300">
     <h2>Ссылки:</h2>
     <p>Администрирование: <a href="http://127.0.0.1:8000/admin/">(тык)</a></p>
-    <p>Список новостей: <a href="http://127.0.0.1:8000/news/list/">Api</a> <a href="http://127.0.0.1:8000/news/">Site</a></p>
-    <p>"Че новенького?":</p>
-    <form action="/news/collect/" method="post">
-        <p><input id="url1" type="radio" name="url" value="https://www.theverge.com/">The verge</p>
-        <p><input id="url2" type="radio" name="url" value="https://ria.ru/">Ria</p>
-        <p><input id="url3" type="radio" name="url" value="https://www.wikipedia.org/">Wikipedia</p>
-        <p><input type="submit" value="Ищи"></p>
-    </form>
+    <p>Список новостей: <a href="http://127.0.0.1:8000/news/news/"><strong>Почитать</strong></a></p>
+    <p>Список табов: <a href="http://127.0.0.1:8000/news/tabs/"><strong>Посмотреть</strong></a></p>
+    
+    <div class='news-block'>
+        <p><strong> "Че новенького?" : </strong></p>
+        <form action="/news/collect/" method="post">
+            <p><input id="url1" type="radio" name="url" value="https://www.theverge.com/">The verge</p>
+            <p><input id="url2" type="radio" name="url" value="https://ria.ru/">Ria</p>
+            <p><input id="url3" type="radio" name="url" value="https://www.wikipedia.org/">Wikipedia</p>
+            <p><input type="submit" value="Ищи"></p>
+        </form>
+    </div>
+    
+    <div class='tabs-block'>
+        <p><strong> "Че по табам?" :</strong></p>
+        <form action="/news/collecttabs/" method="post">
+            <p><input id="url4" type="radio" name="url" value="https://fingertabs.com/">Fingertabs</p>
+            <p><input type="submit" value="Чекни"></p>
+        </form>
+    </div>
 </body>
 </html>

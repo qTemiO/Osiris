@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>What's new?</title>
-
+    <title>What about tabs</title>
+    
     <style type="text/css">
         .header { 
                 width: 400px; 
@@ -15,21 +15,19 @@
                 float: right;
                 margin-right: 5%;
                 align-items: center;
-                align-content: center;
                 }    
         </style>
 </head>
 <body>
-    <div class='header'>
-        <h1 style="text-align: center;">Последние вести с Полисов</h1>
-        <img style="vertical-align: middle; margin-left: 25%;" src="https://avatars.mds.yandex.net/get-zen_doc/105853/pub_5bd735b150707d00aa8abc32_5bd735f345d57300ab3d1ab7/scale_1200", width="200", height="300">
+    <div class='header' >   
+        <h1 style="text-align: center;">Ноты из гильдий</h1>
+        <img style="vertical-align: middle; margin-left: 20%;" src="https://fb.ru/misc/i/gallery/51506/2503187.jpg", width="250", height="300">
     </div>
-
     {% for data in datas %} 
         <ul>
-            <li><h2>{{ data.title }}<h2></li>
-            <li><a href = {{ data.url }}> {{ data.title}} </a></li>
-            <li>{{ data.newsText }} </li>
+            <li><h3>{{ data.name }}<h3></li>
+            <li><i><a href = {{ data.url }}> Страница таба </a></i></li>
+            <li><strong><a href = {{ data.pdf }}> Tab PDF</a></strong></li>
         </ul>
             <p></p>
     {% endfor %} 

@@ -125,15 +125,3 @@ def parse_news(url):
     
     return total
 
-
-"""
-parse_news('https://ria.ru/')
-news = parse_news("https://www.theverge.com/")
-count = 0
-for new in news:
-    logger.warning(new['title'])
-    count += 1
-logger.error(count)
-print(news_text("https://ria.ru/20210420/egipet-1729144307.html?in=t"))
-"""
-#parse_news("https://fingertabs.com/")

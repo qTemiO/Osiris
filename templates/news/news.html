@@ -20,18 +20,64 @@
         </style>
 </head>
 <body>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios@0.20.0/dist/axios.min.js"></script>
+
     <div class='header'>
         <h1 style="text-align: center;">Последние вести с Полисов</h1>
         <img style="vertical-align: middle; margin-left: 25%;" src="https://avatars.mds.yandex.net/get-zen_doc/105853/pub_5bd735b150707d00aa8abc32_5bd735f345d57300ab3d1ab7/scale_1200", width="200", height="300">
     </div>
 
-    {% for data in datas %} 
-        <ul>
-            <li><h2>{{ data.title }}<h2></li>
-            <li><a href = {{ data.url }}> {{ data.title}} </a></li>
-            <li>{{ data.newsText }} </li>
+    <div class="container flex-d justify-content-center col-3" id="filtering">
+        
+        <button v-if="isResponse" v-on:click="NewsFilter">Фильтровать новости</button>
+        <input class="form-control" v-if="isResponse" v-model="textFilter" placeholder="Поиск по тексту">
+        <input class="form-control" v-if="isResponse" v-model="titleFilter" placeholder="Поиск по тайтлу">
+        <ul v-for="data in Response">
+            <li><h2>[[ data.title ]]</h2></li>
+            <li> [[ data.newsText ]] </li>
         </ul>
-            <p></p>
-    {% endfor %} 
+
+    </div>
+
+    <div>
+        {% for data in datas %} 
+            <ul>
+                <li><h2>{{ data.title }}<h2></li>
+                <li><a href = {{ data.url }}> {{ data.title}} </a></li>
+                <li>{{ data.newsText }} </li>
+            </ul>
+                <p></p>
+        {% endfor %} 
+    </div>
+    <script>
+        Vue.options.delimiters = ['[[', ']]'];
+    
+        var filtering = new Vue({
+            el:'#filtering',
+            data: {
+                isResponse: true,
+                Response: null,
+                textFilter: "",
+                titleFilter: '',
+            },
+            methods: {
+                NewsFilter() {
+                    this.isResponse = false
+                    axios({
+                        method: 'post',
+                        url: './newsfilter/',
+                        data: {
+                            "textFilter": this.textFilter,
+                            "titleFilter": this.titleFilter
+                        }
+                    }).then((response) => {
+                        this.Response = response.data.Data
+                    })
+                }
+            }
+        })
+    
+    </script>    
 </body>
 </html>

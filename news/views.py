@@ -1,4 +1,7 @@
+import json
+
 from django.shortcuts import render
+from django.http import HttpResponse, JsonResponse
 
 from rest_framework import generics
 from rest_framework.response import Response
@@ -65,6 +68,57 @@ def NewsHomeView(request):
     data = NewsModel.objects.all()[:]
     serializer = NewsSerializer(data, many=True)
     return render(request, 'news/news.html', context={"datas":serializer.data})
+
+def NewsFilterView(request):
+    params = json.loads(request.body.decode("utf-8"))
+
+    textFilter = params['textFilter']
+    titleFilter = params['titleFilter']
+
+    if titleFilter == "" and textFilter == "":
+        logger.error('No filters set!')
+        return JsonResponse({})
+
+    if titleFilter == "":
+        logger.warning("No title filter set!")
+
+    if textFilter == "":
+        logger.warning('No text filter set!')
+
+    query = NewsModel.objects.all()
+    total = []
+
+    for item in query:
+        if (titleFilter != '') and (textFilter != ''):
+            
+            if titleFilter in item.title:
+                if textFilter in item.newsText:
+                    logger.success(item)
+                    total.append(item)   
+        
+        elif (titleFilter != '') and (textFilter == ''):
+            
+            if titleFilter in item.title:
+                logger.success(item)
+                total.append(item)   
+
+        elif (titleFilter == '') and (textFilter != ''):
+
+            if textFilter in item.newsText:
+                logger.success(item)
+                total.append(item)   
+    
+    if total:
+        serializer = NewsSerializer(total, many=True)
+    else: 
+        logger.error('No news found!')
+        return []
+
+    return JsonResponse({
+        'Data': serializer.data,
+        })
+
+
 
 """Here tabs collect classes"""
 

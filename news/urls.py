@@ -6,13 +6,18 @@ from .views import (
     NewsHomeView,
     NewsCollect,
 
+    NewsFilterView,
+
     TabsCollect,
     TabsHomeView,
 )
 
 urlpatterns = [
     path('news/', NewsHomeView),
+    path('news/newsfilter/', csrf_exempt(NewsFilterView)),
+
     path('tabs/', TabsHomeView),
+
 
     path('list/', NewsListView.as_view()),
     path('collect/', csrf_exempt(NewsCollect.as_view())),

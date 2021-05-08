@@ -16,6 +16,18 @@ def get_tabpdf(url):
         if pdf_div:
             return pdf_div['src']
     
+def get_notepdf(url):
+    logger.warning(url)
+    resp = req.get(url)
+    soup = BS(resp.text, 'html.parser')
+    domain = (url.split('https://')[1].strip('/'))
+
+    if 'sheets-piano.ru' in domain:
+        pdf_div = soup.find('div', class_='wp-block-file').find('a')['href']
+        logger.debug(pdf_div)
+        if pdf_div:
+            return pdf_div
+
 def news_text(url):
     logger.warning(url)
     resp = req.get(url)
@@ -122,6 +134,29 @@ def parse_news(url):
                     "link": tab_link,
                     "pdf": tab_pdf
                 })
-    
+
+    elif domain == 'sheets-piano.ru':
+        divs = soup.find_all('div', class_="sidebar__list-item")
+
+        limit = 0
+        if len(divs) < PARSLIMIT:
+            limit = len(divs)
+        else:
+            limit = PARSLIMIT
+        
+        logger.success('Parselimit: ' + str(limit))
+
+        for div in divs[:limit]:
+            if div:
+                note_link = div.a['href']
+                note_name = div.text.replace('title ', ' ',)
+                note_pdf = get_notepdf(note_link)
+
+                total.append({
+                    "title": note_name,
+                    "link": note_link,
+                    "pdf": note_pdf
+                })
+
     return total
 

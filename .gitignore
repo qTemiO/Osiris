@@ -9,3 +9,5 @@ venv
 /migrations
 migrations
 /news/migrations
+dotenv.env
+osiris/settings.py

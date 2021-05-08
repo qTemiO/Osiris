@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import (
     NewsModel,
     TabsModel,
+    NoteModel
 )
 
 class NewsSerializer(serializers.ModelSerializer):
@@ -17,4 +18,11 @@ class TabsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TabsModel
+        fields = ('__all__')
+
+class NoteSerializer(serializers.ModelSerializer):
+    """Ноты"""
+
+    class Meta:
+        model = NoteModel
         fields = ('__all__')

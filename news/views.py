@@ -12,11 +12,13 @@ from loguru import logger
 from .models import (
     NewsModel,
     TabsModel,
+    NoteModel,
 )
 
 from .serializers import (
     NewsSerializer,
     TabsSerializer,
+    NoteSerializer
 )
 
 from .parser import parse_news
@@ -24,6 +26,7 @@ from .parser import parse_news
 from .forms import (
     NewsCollectForm,
     TabsCollectForm,
+    NoteCollectForm
 )
 
 
@@ -153,3 +156,35 @@ def TabsHomeView(request):
     data = TabsModel.objects.all()
     serializer = TabsSerializer(data, many=True)
     return render(request, 'news/tabs.html', context={"datas":serializer.data})
+
+class NoteCollect(APIView):
+
+    permission_classes = ()
+    authentication_classes = ()
+
+    def post(self, request):
+        logger.debug("Пользователь запрашивает ноты с сайта:")
+        url = NoteCollectForm(request.POST)
+        if url.is_valid():
+            url = url.cleaned_data['url']
+            logger.debug(url)
+            notes = parse_news(url)
+            
+            models = []
+            for note in notes:
+                logger.debug(note['title'])     
+                model, created = NoteModel.objects.update_or_create(url=note['link'], name=note['title'], pdf=note['pdf'])
+                models.append(model)
+                if created:
+                    model.save()
+
+            logger.debug(models)
+            return render(request, 'news/notecollected.html', context=({"datas": NoteSerializer(models, many=True).data}))
+        else:
+            logger.error(url)
+            return Response(status=500)
+
+def NoteHomeView(request):
+    data = NoteModel.objects.all()
+    serializer = NoteSerializer(data, many=True)
+    return render(request, 'news/notes.html', context={"datas":serializer.data})    

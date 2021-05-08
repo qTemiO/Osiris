@@ -32,6 +32,7 @@
     <p>Администрирование: <a href="http://127.0.0.1:8000/admin/">(тык)</a></p>
     <p>Список новостей: <a href="http://127.0.0.1:8000/news/news/"><strong>Почитать</strong></a></p>
     <p>Список табов: <a href="http://127.0.0.1:8000/news/tabs/"><strong>Посмотреть</strong></a></p>
+    <p>Список нот: <a href="http://127.0.0.1:8000/news/note/"><strong>Посмотреть</strong></a></p>
     
     <div class='news-block'>
         <p><strong> "Че новенького?" : </strong></p>
@@ -48,6 +49,14 @@
         <form action="/news/collecttabs/" method="post">
             <p><input id="url4" type="radio" name="url" value="https://fingertabs.com/">Fingertabs</p>
             <p><input type="submit" value="Чекни"></p>
+        </form>
+    </div>
+
+    <div class='tabs-block'>
+        <p><strong> " А Че тогда по нотам?" :</strong></p>
+        <form action="/news/collectnotes/" method="post">
+            <p><input id="url4" type="radio" name="url" value="https://sheets-piano.ru/">Sheets-piano</p>
+            <p><input type="submit" value="Смотреть"></p>
         </form>
     </div>
 </body>

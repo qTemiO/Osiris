@@ -5,3 +5,5 @@ class NewsCollectForm(forms.Form):
 
 class TabsCollectForm(forms.Form):
     url = forms.URLField()
+class NoteCollectForm(forms.Form):
+    url = forms.URLField()    

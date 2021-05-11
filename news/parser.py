@@ -47,7 +47,13 @@ def news_text(url):
         text_div = soup.find_all('div', class_="article__text")
         for div in text_div:
             new_text += ((div.text) + ('\n\n'))
-            
+    
+    if 'stopgame.ru' in domain:
+        text_div = soup.find('div', class_="main-content")  
+        if text_div:
+            p_div = text_div.find_all('p')
+            for p in p_div:
+                new_text += ((p.text) + ('\n\n'))
     return new_text
 
 def parse_news(url):
@@ -88,6 +94,36 @@ def parse_news(url):
                     "title": post_title,
                     "text": post_text
                 })
+
+    elif domain == 'stopgame.ru':
+        divs = soup.find_all('div', class_="caption caption-bold")
+        limit = 0
+        if len(divs) < PARSLIMIT:
+            limit = len(divs)
+        else:
+            limit = PARSLIMIT
+
+        logger.success('Parselimit: ' + str(limit))
+        
+        for div in divs[:limit]:
+            if div:
+                a_block = div.find('a')
+
+                post_link = ''
+                post_title = ''
+                post_text = ''
+                
+                if a_block:
+                    post_link ='https://' + domain + a_block['href']
+                    post_title = a_block.text
+                    post_text = news_text(post_link)
+                
+                total.append({
+                    "link": post_link,
+                    "title": post_title,
+                    "text": post_text
+                })
+
 
     elif domain == 'ria.ru':
         divs = soup.find_all('a', class_="cell-list__item-link color-font-hover-only")
@@ -157,6 +193,7 @@ def parse_news(url):
                     "link": note_link,
                     "pdf": note_pdf
                 })
-
+    
+            
     return total
 

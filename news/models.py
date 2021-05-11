@@ -25,7 +25,7 @@ class TabsModel(models.Model):
 class NoteModel(models.Model):
     url = models.URLField()
     pdf = models.URLField()
-    name = models.CharField(max_length=300)
+    name = models.CharField(max_length=500)
     
     def __repr__(self):
         return self.name

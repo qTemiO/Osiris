@@ -3,125 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>vue</title>
+    <title>Workquote journal</title>
 </head>
 <body>  
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/axios@0.20.0/dist/axios.min.js"></script>
 
-    <!--Hello world-->
-    <div id="app">
-        [[ HelloThere ]]
+    <!--Journal-->
+    <div id="spisok">
+        <p><h1>Журнал рабочки</h1></p>
+        <button v-on:click="getWorkJournal">Открыть журнал рабочки</button>
+        <input v-model='date' placeholder='Введите дату'>
+        <p>
+            <button v-on:click="getYesterdayWorkJournal">Кто вчера был в рабочке?</button>
+            <button v-on:click="getTodayWorkJournal">Кто сегодня был в рабочке?</button>
+        </p>
+        <p>
+            <button v-on:click="getWeekWorkJournal">Кто на неделе был в рабочке?</button>
+        </p>
+        <ul v-if='isSend' v-for="data in Response">
+                <li> [[ data.user.username ]] </li>
+                <li> [[ data.date ]] </li>
+                <li> [[ data.quote ]] </li>
+                <li> [[ data.description ]]</li>
+        </ul>
         <p></p>
     </div>
 
-    <!--Names-->
-    <div class="container flex-d justify-content-center col-3" id="dataNames">
-        <ol>
-            <li v-for="name in Response">
-              [[ name ]]
-            </li>
-        </ol>
-        <p></p>
-        <button :class="['btn', isResonse ? 'btn-success' : 'btn-primary']"
-            @click="sendNames">Вывести предателей Родины</button>
-        <p></p>
-    </div>
-    
-    <!--All items-->
-    <div class="container flex-d justify-content-center col-3" id="dataAll">
-        <button v-if="isResonse" v-on:click="namesFilter">Фильтровать доносы</button>
-        <input class="form-control" v-if="isResonse" v-model="textFilter" placeholder="Что вы хотите найти?">
-        <select v-if="isResonse" v-model="filterCategory">
-            <option disabled value="">Выберите один из вариантов</option>
-            <option>Имя</option>
-            <option>Категория</option>
-            <option>Текст</option>
+    <!--Add new works-->
+    <div id='adding'>
+        <p><h1>В <b>рабочку</b> пойдет...</h1></p>
+        <p v-if='isSend'><h3>[[ status ]]</h1></p>
+        <select v-model="worker">
+            <option v-for="user in users"> [[ user.username ]] </option>
+            <option value='random'> Похуй, рандом </option>
+            <option value='nobody'> Никто </option>
         </select>
-        <ul v-for="data in Response">
-                <li> [[ data.Text ]] </li>
-                <li> [[ data.Category ]] </li>
-        </ul>
-        <button :class="['btn', isResonse ? 'btn-success' : 'btn-primary']"
-        v-on:click="sendAll">Показать доносы</button>
+        
+        <p>Примечание: <input v-model="description" placeholder="Кладовая, склад, имущество и др."></p>   
+        <p>Примерная <b>сложность</b>: <input v-model="dificulty" type="number" step="1"></p>
+        <button v-on:click='setWorker'>Внести в журнал</button>
     </div>
 </body>
 
 <script>
     Vue.options.delimiters = ['[[', ']]'];
-
-    var dataNames = new Vue({
-        el:'#dataNames',
+    
+    var adding = new Vue({
+        el:'#adding',
         data: {
-            isResonse: false,
+            users: null,
+            worker: 'nobody',
+            description: '',
+            dificulty: 1,
+            date: null,
             Response: null,
-            isDataResponse: false,
-            dataResponse: null,
+            isSend: false,
+            status: '',
         },
 
         methods: {
-            sendNames() {
+            getUserList() {
                 axios({
-                    method: 'post',
-                    url: './sendNames/',
-                    data: {}
+                    method: 'get',
+                    url: './userlist/'
                 }).then((response) => {
-                    this.isResonse = true,
-                    this.Response = response.data.name
+                    this.users = null
+                    this.users = response.data.Users
                 })
             },
-        }
-    })
-
-    var dataAll = new Vue({
-        el:'#dataAll',
-        data: {
-            isResonse: false,
-            Response: null,
-            textFilter: "Ivan",
-            filterCategory: '',
-        },
-        methods: {
-            sendAll() {
+            setWorker() {
                 axios({
                     method: 'post',
-                    url: './sendAll/',
-                    data: {}
-                }).then((response) => {
-                    this.isResonse = true,
-                    this.Response = response.data.Data
-                })
-            },
-            namesFilter() {
-                axios({
-                    method: 'post',
-                    url: './namesFilter/',
+                    url: './setworker/',
                     data: {
-                        "textFilter": this.textFilter,
-                        "filterCategory": this.filterCategory
-                    }
+                        'worker': this.worker,
+                        'description': this.description,
+                        'dificulty': this.dificulty
+                    },
                 }).then((response) => {
-                    this.Response = response.data.Data
+                    this.isSend = true,
+                    this.description = null,
+                    this.status = response.data.description
                 })
             }
-        }
+        },
+
+        beforeMount() {
+            this.getUserList()
+        },
     })
 
-
-    var app = new Vue({
-        el:'#app',
+    var spisok = new Vue({
+        el:'#spisok',
         data: {
-            HelloThere: 'Товарищ политрук, новая партия доносов прибыла!'
+            date: null,
+            Response: null,
+            isSend: false,
+        },
+        methods: {
+            getWorkJournal() {
+                axios({
+                    method: 'post',
+                    url: './journal/',
+                    data: {
+                        'date': this.date
+                    }
+                }).then((response) => {
+                    this.isSend = true,
+                    this.Response = response.data.Data
+                })
+            },
+            getYesterdayWorkJournal() {
+                axios({
+                    method: 'post',
+                    url: './journal/',
+                    data: {
+                        'date': 'yesterday'
+                    }
+                }).then((response) => {
+                    this.isSend = true,
+                    this.Response = response.data.Data
+                })
+            },            
+            getTodayWorkJournal() {
+                axios({
+                    method: 'post',
+                    url: './journal/',
+                    data: {
+                        'date': 'today'
+                    }
+                }).then((response) => {
+                    this.isSend = true,
+                    this.Response = response.data.Data
+                })
+            },
+            getWeekWorkJournal() {
+                axios({
+                    method: 'post',
+                    url: './journal/',
+                    data: {
+                        'date': 'week'
+                    }
+                }).then((response) => {
+                    this.isSend = true,
+                    this.Response = response.data.Data
+                })
+            },
         }
     })
-
-    var pricols = new Vue({
-    el: '#pricols',
-    data: {
-        time: new Date().toLocaleString() + ", товарищ Политрук!"
-    }
-    })
-
-
 </script>
+
 </html>
